@@ -62,12 +62,28 @@ For each island 0 to N-1:
    ```
 
 2. **Cross-pollination (generation > 1 only):**
-   If a better island exists, read its diff for context:
+
+   **Diversity island:** If `island_id == generation % n_islands`, skip
+   cross-pollination entirely. Improve independently to preserve diversity.
+
+   **All other islands:** Read ALL other islands' diffs with their scores:
    ```bash
-   git -C {repo_root}/.ri-islands/island-{best_id} diff {base_ref}...HEAD
+   # For each other island i (skip your own):
+   echo "=== Island {i} (score: {score_i}) ==="
+   git -C {repo_root}/.ri-islands/island-{i} diff {base_ref}...HEAD
    ```
-   Use this diff as inspiration — understand what the best island changed and why
-   it scored higher. Incorporate relevant ideas, but explore your own approach too.
+
+   Your primary references for this round:
+   - **Primary (exploit):** Island {best_id} (score {best_score}) — the
+     current leader. Deeply analyze what it changed and why it works.
+   - **Explore:** Island {random_other_id} (score {score}) — randomly
+     picked from the remaining islands. Study it for alternative ideas,
+     unconventional approaches, or hidden gems even if its overall score
+     is low.
+
+   Deeply compare these two. The primary shows what works. The explorer
+   might have ideas worth incorporating that the leader missed. The
+   remaining diffs are available for additional context if needed.
 
 3. **Run the improvement pipeline:**
    Run `/recursive-improve` (stages 0–7) in the island's worktree with auto-approve.
@@ -152,7 +168,8 @@ Tell the user:
 - Never modify the main branch during evolution
 - Do NOT modify trace files
 - **Always use absolute paths** for `--config` when inside a worktree
-- Read the best island's diff before improving other islands — this is cross-pollination
+- Cross-pollination: show all diffs but deeply reference the best + one random island
+- One island per generation skips cross-pollination (diversity preservation: `island_id == generation % n_islands`)
 - Keep fixes small and targeted — smaller changes are easier to compare across islands
 - If an island's improvement fails, skip it and continue to the next
 - Always commit before evaluating so the diff is available for cross-pollination
