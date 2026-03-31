@@ -53,7 +53,7 @@ Add the tracing dependency to your project:
 uv add "recursive-improve @ git+https://github.com/kayba-ai/recursive-improve.git"
 ```
 
-Two lines. Your agent code stays unchanged, we just observe.
+Two lines. Your agent code stays unchanged, but now your agents execution traces get saved locally.
 
 ```python
 import recursive_improve as ri
@@ -118,10 +118,6 @@ Each improvement cycle lives on its own branch. The dashboard shows before/after
 ```
 
 An autoresearch-style autonomous loop. It asks you what to optimize, then repeats: improve → run agent → eval → keep or revert. Only improvements survive. Check `eval/ratchet_summary.md` when you wake up.
-
-> [!TIP]
-> Want deeper analysis? [Kayba](https://kayba.ai) offers managed recursive agent improvement at 
-  scale, tailored to your agent.
 
 ---
 
